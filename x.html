@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+                /* Basic styling for layout */
+        .product {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            width: 200px;
+        }
+
+        /* Cart styling for slide-in effect */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #f4f4f4;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .cart-overlay.active {
+            transform: translateX(0);
+        }
+
+        /* Cart item layout */
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .cart-controls button {
+            margin-left: 5px;
+        }
+
+        /* Cart button styling */
+        #cart-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Close button inside cart */
+        .close-cart {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        /* Cart Slide-in Styles */
+.cart-container {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;
+    background: #f4f4f4;
+    border-left: 1px solid #ddd;
+    transition: right 0.3s ease;
+    z-index: 1001;
+    padding: 20px;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.cart-container.open {
+    right: 0;
+}
+
+/* Tooltip */
+.cart-summary {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 200px;
+    display: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Toast Notification */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1002;
+}
+
+.toast {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    opacity: 0.9;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.toast.fade-out {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Product List -->
+    <div id="product-list">
+        <h2>Products</h2>
+        <div>
+            <p>Product 1 - $10</p>
+            <button onclick="addToCart('Product 1', 10)">Add to Cart</button>
+        </div>
+        <div>
+            <p>Product 2 - $15</p>
+            <button onclick="addToCart('Product 2', 15)">Add to Cart</button>
+        </div>
+        <div>
+            <p>Product 3 - $20</p>
+            <button onclick="addToCart('Product 3', 20)">Add to Cart</button>
+        </div>
+    </div>
+
+    <!-- Cart Button -->
+    <button id="cart-button">View Cart (<span id="item-count">0</span>)</button>
+    
+    <!-- Cart Slide-in Container -->
+    <div id="cart-container" class="cart-container">
+        <div id="cart-content"></div>
+        <button onclick="emptyCart()">Empty Cart</button>
+        <button onclick="toggleCart()">Close Cart</button>
+    </div>
+    
+    <!-- Tooltip for Cart Summary -->
+    <div id="cart-summary" class="cart-summary"></div>
+    
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
+

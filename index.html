@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      /* Basic styling for layout */
+      .product {
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        width: 200px;
+      }
+
+      /* Cart styling for slide-in effect */
+      .cart-overlay {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 400px;
+        height: 100%;
+        background-color: #f4f4f4;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        padding: 20px;
+        overflow-y: auto;
+        z-index: 1000;
+      }
+      .cart-overlay.active {
+        transform: translateX(0);
+      }
+
+      /* Cart item layout */
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 5px 0;
+      }
+      .cart-controls button {
+        margin-left: 5px;
+      }
+
+      /* Cart button styling */
+      #cart-button {
+        /* position: fixed; */
+        /* top: 20px;
+        right: 20px; */
+        padding: 10px 20px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        margin-left: auto;
+        /* z-index: 1001; */
+      }
+
+      /* Close button inside cart */
+      .close-cart {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      /* Cart Slide-in Styles */
+      .cart-container {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        height: 100%;
+        background: #f4f4f4;
+        border-left: 1px solid #ddd;
+        transition: right 0.3s ease;
+        z-index: 1001;
+        padding: 20px;
+        box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .cart-container.open {
+        right: 0;
+      }
+
+      /* Tooltip */
+      .cart-summary {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background-color: #f4f4f4;
+        border: 1px solid #ddd;
+        padding: 10px;
+        width: 200px;
+        display: none;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Toast Notification */
+      #toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1002;
+      }
+
+      .toast {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        margin-top: 10px;
+        border-radius: 5px;
+        opacity: 0.9;
+        transition: opacity 0.3s, transform 0.3s;
+      }
+
+      .toast.fade-out {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .navbar {
+        position: sticky;
+        top: 0;
+        display: flex;
+        padding: 1em;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      .container {
+        max-width: 1200px; /* Maximum width of the navbar */
+        margin: 0 auto; /* Centers the navbar */
+        padding: 10px 20px; /* Padding inside the navbar */
+        display: flex; /* Flexbox layout */
+        justify-content: space-between; /* Space between logo and links */
+        align-items: center; /* Align items vertically */
+      }
+
+      .nav-links {
+        list-style: none; /* Removes default list styling */
+        display: flex; /* Flexbox for the navigation links */
+        gap: 20px; /* Space between links */
+      }
+
+      .nav-links a {
+        text-decoration: none; /* Removes underline from links */
+        color: #333; /* Text color */
+        transition: color 0.3s; /* Smooth transition for hover effect */
+      }
+
+      .nav-links a:hover {
+        color: #007bff; /* Hover color */
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <div class="logo">Logo</div>
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <!-- Cart Button with Item Count -->
+      <button id="cart-button" onclick="toggleCart()">
+        View Cart (<span id="item-count">0</span>)
+      </button>
+    </nav>
+    <h1>Products</h1>
+    <div class="product">
+      <h2>JBL Charge 5</h2>
+      <p>N500,000</p>
+      <button onclick="addToCart('JBL Charge 5', 500000)">Add to Cart</button>
+    </div>
+    <div class="product">
+      <h2>JBL Flip 6</h2>
+      <p>N300,000</p>
+      <button onclick="addToCart('JBL Flip 6', 300000)">Add to Cart</button>
+    </div>
+
+    <!-- Slide-in Cart Overlay -->
+    <div id="cart" class="cart-overlay">
+      <h2>Shopping Cart</h2>
+      <div id="cart-items">
+        <p>Your cart is empty.</p>
+      </div>
+      <button id="cart-empty-button" onclick="emptyCart()">Empty Cart</button>
+      <button onclick="toggleCart()">Close Cart</button>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
